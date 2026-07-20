@@ -502,7 +502,7 @@ function GlowEffect({ x, y }: { x: number; y: number }) {
 // ==========================================
 // --- 9. 主页面 ---
 // ==========================================
-const MAX_FLOWERS = 50;
+const MAX_FLOWERS = 100;
 
 export default function Home() {
   const [flowers, setFlowers] = useState<FlowerData[]>([]);
