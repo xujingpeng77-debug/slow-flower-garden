@@ -4,26 +4,30 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-site:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: 拉取完整源碼
+        uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: 配置 Node 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install & Build
+      - name: 進入前端目錄安裝依賴
+        run: cd client && npm install --legacy-peer-deps
+
+      - name: Vite 打包網站
+        run: cd client && npm run build
+
+      - name: 判斷靜態資料夾是否存在並複製
         run: |
-          cd client
-          npm install --legacy-peer-deps
-          npm run build
+          if [ -d "client/dist/public" ]; then
+            cp -r client/dist/public/* ./
+          fi
 
-      - name: Copy static files
-        run: cp -r client/dist/public/* ./
-
-      - name: Deploy
+      - name: 部署至 GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
