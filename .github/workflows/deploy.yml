@@ -1,0 +1,27 @@
+name: Build & Deploy Pages
+on:
+  push:
+    branches: [ main ]
+jobs:
+  build-site:
+    runs-on: windows-latest
+    steps:
+      - name: 拉取源码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 安装依赖并打包前端
+        run: |
+          cd client
+          npm install --legacy-peer-deps
+          npm run build
+          xcopy dist\public .. /E /Y
+
+      - name: 部署到 GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
