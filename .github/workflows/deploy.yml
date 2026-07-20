@@ -15,13 +15,18 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: |
+          cd client
+          npm install --legacy-peer-deps
 
-      - name: Build site
-        run: npm run build
+      - name: Build frontend
+        run: |
+          cd client
+          npm run build
 
-      - name: Deploy to gh-pages
+      - name: Deploy static site
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./dist/public
+          base_path: /slow-flower-garden
