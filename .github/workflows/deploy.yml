@@ -2,26 +2,27 @@ name: Build & Deploy Pages
 on:
   push:
     branches: [ main ]
+
 jobs:
-  build-site:
-    runs-on: windows-latest
+  build-deploy:
+    runs-on: ubuntu-latest
     steps:
-      - name: 拉取源码
+      - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: 安装 Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: 安装依赖并打包前端
+      - name: Install dependencies & Build
         run: |
           cd client
           npm install --legacy-peer-deps
           npm run build
-          xcopy dist\public .. /E /Y
+          mv dist/public/* ./
 
-      - name: 部署到 GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
